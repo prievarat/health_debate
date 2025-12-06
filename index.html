@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Healthy or Unhealthy? Debate Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --primary-300:#F9C97A;
+      --primary-500:#F4A329;
+      --primary-700:#B45309;
+      --secondary-300:#7EDAD6;
+      --secondary-500:#2BB6B4;
+      --secondary-700:#0F766E;
+      --accent-300:#F49DB8;
+      --accent-500:#E8467B;
+      --accent-700:#A61E4D;
+      --bg:#FFF7F2;
+      --surface:#FFFFFF;
+      --surface-alt:#F5F7FA;
+      --border:#E6E9EF;
+      --text:#1F2937;
+      --text-2:#4B5563;
+      --text-muted:#6B7280;
+      --text-inverse:#FFFFFF;
+      --success:#2F9E44;
+      --warning:#F59F00;
+      --error:#D92D20;
+      --info:#2563EB;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", "Nunito", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 16px;
+      color: var(--text);
+      background: radial-gradient(circle at top left, #ffe7c8 0, #fff7f2 45%, #f5f7fa 100%);
+      min-height: 100vh;
+    }
+
+    .app-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px 16px 40px;
+    }
+
+    header.app-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .app-title-group h1 {
+      font-size: 32px;
+      margin: 0 0 4px;
+      color: var(--primary-700);
+      letter-spacing: 0.02em;
+    }
+
+    .app-title-group p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .level-toggle {
+      display: inline-flex;
+      align-items: center;
+      background: var(--surface);
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 14px rgba(17,24,39,0.08);
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .level-toggle button {
+      border: none;
+      background: transparent;
+      padding: 8px 16px;
+      font-size: 14px;
+      border-radius: 9999px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: background 180ms ease, color 180ms ease;
+    }
+
+    .level-toggle button.active {
+      background: var(--secondary-500);
+      color: var(--text-inverse);
+    }
+
+    main {
+      display: block;
+    }
+
+    .card {
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 14px rgba(17,24,39,0.08);
+      padding: 20px;
+    }
+
+    .surface-alt {
+      background: var(--surface-alt);
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .btn {
+      border-radius: 9999px;
+      border: 1px solid transparent;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      white-space: nowrap;
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid var(--secondary-500);
+      outline-offset: 2px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-700), var(--primary-500));
+      color: var(--text-inverse);
+      border-color: var(--primary-700);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(0.95);
+      box-shadow: 0 6px 18px rgba(180,83,9,0.25);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary-700);
+      border-color: var(--primary-300);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(249,201,122,0.16);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--text-2);
+      border-color: transparent;
+    }
+
+    .btn-ghost:hover {
+      background: rgba(226,232,240,0.5);
+    }
+
+    .btn-danger {
+      background: var(--error);
+      color: var(--text-inverse);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 10px;
+      border-radius: 9999px;
+      font-size: 12px;
+      background: var(--secondary-300);
+      color: var(--secondary-700);
+      font-weight: 600;
+    }
+
+    .badge-outline {
+      background: transparent;
+      border: 1px solid var(--secondary-500);
+      color: var(--secondary-700);
+    }
+
+    /* Home / topics view */
+
+    #view-home .intro {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    #view-home .intro-text {
+      flex: 1 1 260px;
+    }
+
+    #view-home .intro h2 {
+      font-size: 24px;
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+
+    #view-home .intro p {
+      margin: 0 0 4px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    #view-home .hint {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .topics-grid {
+      margin-top: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .topic-card {
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .topic-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(17,24,39,0.12);
+      border-color: var(--primary-300);
+    }
+
+    .topic-pill {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .topic-card h3 {
+      font-size: 18px;
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+
+    .topic-card p {
+      margin: 0 0 12px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .topic-tagline {
+      font-size: 13px;
+      color: var(--primary-700);
+      font-weight: 600;
+    }
+
+    /* Side selection */
+
+    #view-side h2 {
+      font-size: 24px;
+      margin: 0 0 4px;
+    }
+
+    #view-side p {
+      margin: 0 0 16px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .side-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .side-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Debate view */
+
+    #view-debate-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    #view-debate-header h2 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    #current-side-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--accent-700);
+    }
+
+    .layout-two-columns {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
+      gap: 16px;
+    }
+
+    @media (max-width: 900px) {
+      .layout-two-columns {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .facts-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .facts-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .facts-footer {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .facts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .fact-card {
+      background: var(--surface-alt);
+      border-radius: 12px;
+      padding: 10px 12px;
+      border: 1px solid var(--border);
+    }
+
+    .fact-index {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .fact-text {
+      font-size: 14px;
+      color: var(--text-2);
+      margin-bottom: 4px;
+    }
+
+    .argument-text {
+      font-size: 14px;
+      color: var(--primary-700);
+      border-top: 1px dashed rgba(191,219,254,0.9);
+      padding-top: 4px;
+      margin-top: 4px;
+    }
+
+    .notes-area label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-2);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 140px;
+      resize: vertical;
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-family: inherit;
+      font-size: 14px;
+      color: var(--text);
+      background: var(--surface);
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    textarea:focus-visible {
+      outline: none;
+      border-color: var(--secondary-500);
+      box-shadow: 0 0 0 2px rgba(43,182,180,0.15);
+    }
+
+    .speaking-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .speaking-card p {
+      margin: 0 0 6px;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .bullet-list {
+      margin: 4px 0 0 16px;
+      padding-left: 0;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .bullet-list li {
+      margin-bottom: 2px;
+    }
+
+    .reflection-card h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .reflection-card ol {
+      margin: 0 0 0 18px;
+      padding-left: 0;
+      font-size: 14px;
+      color: var(--text-2);
+    }
+
+    .reflection-card li {
+      margin-bottom: 4px;
+    }
+
+    .toolbar-top {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 16px;
+      justify-content: space-between;
+    }
+
+    .toolbar-top-left,
+    .toolbar-top-right {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .pill-info {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="app-title-group">
+        <h1>Healthy or Unhealthy?</h1>
+        <p>Classroom debate game based on real-life habits and behaviours.</p>
+      </div>
+      <div class="level-toggle" aria-label="Language level">
+        <button type="button" id="level-easy" class="active">Easy English</button>
+        <button type="button" id="level-advanced">Advanced English</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- HOME VIEW -->
+      <section id="view-home" class="view active">
+        <div class="card">
+          <div class="intro">
+            <div class="intro-text">
+              <h2>1. Choose a topic to debate</h2>
+              <p>Click on a card, then decide if you are <strong>FOR</strong> or <strong>AGAINST</strong> the habit.</p>
+              <p class="hint">Tip for teachers: assign different topics to pairs or halves of the class.</p>
+            </div>
+            <div class="card surface-alt" style="flex: 0 1 260px;">
+              <span class="badge badge-outline">Game flow</span>
+              <p style="margin: 8px 0 4px; font-size: 14px; color: var(--text-2);">
+                1. Choose topic & side<br>
+                2. Read the facts<br>
+                3. Write your own arguments<br>
+                4. Use Help if needed<br>
+                5. Speak and debate
+              </p>
+              <p class="hint">Students can switch between Easy and Advanced English at any time.</p>
+            </div>
+          </div>
+
+          <div class="topics-grid" id="topics-grid">
+            <!-- Topic cards injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- SIDE SELECTION VIEW -->
+      <section id="view-side" class="view">
+        <div class="card">
+          <div class="toolbar-top">
+            <div class="toolbar-top-left">
+              <button class="btn btn-ghost" type="button" id="btn-back-to-home">&larr; Back to topics</button>
+            </div>
+            <div class="toolbar-top-right">
+              <span class="pill-info" id="side-level-label"></span>
+            </div>
+          </div>
+          <h2 id="side-topic-title"></h2>
+          <p id="side-topic-subtitle">
+            Are you going to argue that this behaviour is <strong>healthy/helpful</strong> or <strong>unhealthy/harmful</strong>?
+          </p>
+          <div class="side-buttons">
+            <button class="btn btn-primary" type="button" id="btn-side-for">FOR this habit</button>
+            <button class="btn btn-secondary" type="button" id="btn-side-against">AGAINST this habit</button>
+          </div>
+          <p class="side-label">
+            Tip: you can also ask students to defend the side they personally disagree with.
+          </p>
+        </div>
+      </section>
+
+      <!-- DEBATE VIEW -->
+      <section id="view-debate" class="view">
+        <div class="toolbar-top">
+          <div class="toolbar-top-left">
+            <button class="btn btn-ghost" type="button" id="btn-debate-back">&larr; Back to topics</button>
+            <button class="btn btn-secondary" type="button" id="btn-switch-side">Switch side</button>
+          </div>
+          <div class="toolbar-top-right">
+            <span class="pill-info" id="debate-level-label"></span>
+          </div>
+        </div>
+
+        <div id="view-debate-header">
+          <div>
+            <h2 id="debate-topic-title"></h2>
+            <div id="current-side-label"></div>
+          </div>
+        </div>
+
+        <div class="layout-two-columns">
+          <!-- Left column: Facts and Help -->
+          <div class="card">
+            <div class="facts-header">
+              <h3>Facts for your side</h3>
+              <div class="btn-row">
+                <button class="btn btn-secondary" type="button" id="btn-next-fact">Show next fact</button>
+                <button class="btn btn-ghost" type="button" id="btn-show-all">Show all facts</button>
+              </div>
+            </div>
+            <p class="pill-info">
+              Read the facts first. Use them to build your own arguments. If you get stuck, click “Show Help”.
+            </p>
+            <div class="facts-list" id="facts-container">
+              <!-- Facts injected by JS -->
+            </div>
+            <div class="facts-footer">
+              <strong>Help:</strong> model arguments will use
+              <span id="facts-level-indicator">Easy English</span>.
+              You can change the level at the top of the page.
+            </div>
+            <div style="margin-top: 12px;" class="btn-row">
+              <button class="btn btn-primary" type="button" id="btn-show-help">Show Help (model arguments)</button>
+              <button class="btn btn-ghost" type="button" id="btn-hide-help">Hide Help</button>
+            </div>
+          </div>
+
+          <!-- Right column: Notes and speaking -->
+          <div class="card surface-alt">
+            <div class="notes-area">
+              <label for="notes-input">Your notes and arguments</label>
+              <textarea id="notes-input" placeholder="Write 2–3 arguments for your side. Try to include at least one fact in each argument."></textarea>
+              <div class="btn-row" style="margin-top: 8px;">
+                <button class="btn btn-ghost" type="button" id="btn-clear-notes">Clear notes</button>
+              </div>
+            </div>
+
+            <div class="card speaking-card" style="margin-top: 16px;">
+              <h3>Speaking round</h3>
+              <p>Now debate with your partner or group.</p>
+              <ul class="bullet-list">
+                <li>Use at least two arguments.</li>
+                <li>Refer to the facts (for example: “One fact says that…”).</li>
+                <li>Try to use linkers: because, so, however, for example.</li>
+              </ul>
+            </div>
+
+            <div class="card reflection-card" style="margin-top: 16px;">
+              <h3>Reflection</h3>
+              <ol>
+                <li>Which argument was the most convincing in your debate?</li>
+                <li>Did any fact change your opinion about this habit?</li>
+                <li>Is this habit more healthy or more unhealthy in your view now?</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Debate topics database with Easy + Advanced arguments
+    const debateTopics = [
+      {
+        id: "supplements_daily",
+        title: "Taking dietary supplements or vitamins every day",
+        tagline: "Can pills replace a healthy diet?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Supplements can help people who do not get enough vitamins and minerals from food.",
+                argumentEasy: "Vitamin pills can help people who do not get enough healthy things from their food.",
+                data: "Many people skip meals or eat fast food, so they may not get all the vitamins and minerals they need from their diet."
+              },
+              {
+                argumentAdvanced: "Some people need extra vitamins because of their age, lifestyle or medical condition.",
+                argumentEasy: "Some people need extra vitamins because they are old, pregnant, do a lot of sport or have health problems.",
+                data: "Older people, pregnant women or athletes are often told by doctors to take extra vitamins like D, folic acid or iron."
+              },
+              {
+                argumentAdvanced: "Taking one pill a day feels like an easy way to support your general health.",
+                argumentEasy: "Taking one tablet every day feels like an easy way to take care of your health.",
+                data: "A daily multivitamin usually contains a mix of common vitamins and minerals in one tablet."
+              },
+              {
+                argumentAdvanced: "Supplements can be useful in countries where there is little sunlight or poor diet.",
+                argumentEasy: "Vitamin pills can help people in places where there is not much sun or where people do not eat very well.",
+                data: "In places with long, dark winters, people often have low vitamin D levels because they do not get enough sunlight."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Many people who eat a balanced diet do not need extra vitamins.",
+                argumentEasy: "People who eat healthy food usually do not need extra vitamins.",
+                data: "If someone eats enough fruit, vegetables, whole grains and protein, they usually get the vitamins they need from food."
+              },
+              {
+                argumentAdvanced: "Taking too many supplements can be expensive and a waste of money.",
+                argumentEasy: "Vitamin pills can cost a lot of money and may not be necessary.",
+                data: "A bottle of branded vitamins can cost as much as several healthy meals made from fresh food."
+              },
+              {
+                argumentAdvanced: "High doses of some vitamins can even be harmful.",
+                argumentEasy: "Too much of some vitamins can actually be bad for your health.",
+                data: "Fat-soluble vitamins like A, D, E and K stay in the body longer and can build up if taken in very large amounts."
+              },
+              {
+                argumentAdvanced: "People may believe supplements can replace a healthy lifestyle.",
+                argumentEasy: "People may think vitamin pills can replace healthy eating and exercise.",
+                data: "Some people take pills every day but still smoke, drink a lot or rarely exercise, so the real problems do not change."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "long_distance_running",
+        title: "Doing long-distance running regularly",
+        tagline: "Is distance running the best way to stay fit?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Long-distance running is great for heart and lung health.",
+                argumentEasy: "Running long distances is very good for your heart and lungs.",
+                data: "Regular cardio exercise strengthens the heart muscle and helps the body use oxygen more efficiently."
+              },
+              {
+                argumentAdvanced: "Running helps many people control their weight.",
+                argumentEasy: "Running helps a lot of people stay at a healthy weight.",
+                data: "A one-hour run can burn a lot of calories compared with walking or sitting at a desk."
+              },
+              {
+                argumentAdvanced: "Running can reduce stress and improve mood.",
+                argumentEasy: "Running can lower stress and make people feel happier.",
+                data: "After exercise, the body releases chemicals like endorphins that can make people feel happier and more relaxed."
+              },
+              {
+                argumentAdvanced: "It is a cheap sport that almost anyone can start.",
+                argumentEasy: "Running is cheap, and almost everyone can start it easily.",
+                data: "People usually only need comfortable clothes and a good pair of shoes, no expensive gym membership."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Long-distance running can put a lot of stress on joints like knees and ankles.",
+                argumentEasy: "Running long distances can be hard on your knees and ankles.",
+                data: "Every time the foot hits the ground, the body feels a force that is stronger than normal walking."
+              },
+              {
+                argumentAdvanced: "Training for many hours a week can lead to overtraining and injuries.",
+                argumentEasy: "Running too much every week can cause injuries.",
+                data: "Common problems for runners include shin pain, knee pain and muscle strains when they run too much or too fast."
+              },
+              {
+                argumentAdvanced: "Not everyone enjoys running for a long time, so they may stop quickly.",
+                argumentEasy: "Many people do not enjoy running for a long time and give up soon.",
+                data: "Some people find long runs boring or uncomfortable and prefer team sports or other forms of movement."
+              },
+              {
+                argumentAdvanced: "People with heart or breathing problems may need medical advice before running long distances.",
+                argumentEasy: "People with heart or breathing problems should ask a doctor before they start long-distance running.",
+                data: "A sudden, very hard workout can be dangerous if someone has an undiagnosed heart condition."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "cold_showers",
+        title: "Taking a cold shower every morning",
+        tagline: "Ice-cold wake-up: healthy routine or unnecessary shock?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Cold showers can help people wake up and feel more alert.",
+                argumentEasy: "A cold shower can wake you up and make you feel more awake.",
+                data: "Cold water activates the nervous system and makes the heart beat faster, which can make people feel more awake."
+              },
+              {
+                argumentAdvanced: "Some people say cold showers improve their mood and energy.",
+                argumentEasy: "Some people say they feel happier and have more energy after a cold shower.",
+                data: "Changing temperature can cause the body to release hormones that affect energy and feelings."
+              },
+              {
+                argumentAdvanced: "Cold showers can save energy compared with long hot showers.",
+                argumentEasy: "Cold showers often use less hot water, so they can save energy.",
+                data: "People usually stay in a cold shower for a shorter time, so they use less hot water and electricity or gas."
+              },
+              {
+                argumentAdvanced: "Cold water can be good after sports to reduce swelling or sore muscles.",
+                argumentEasy: "Cold water after sport can help when muscles hurt.",
+                data: "Athletes sometimes use ice baths or cold water after intense training to help their bodies recover."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Cold showers can be a shock to the body, especially for people with heart problems.",
+                argumentEasy: "Cold water can shock the body, especially if someone has heart problems.",
+                data: "Very cold water makes blood vessels smaller, which can raise blood pressure for a short time."
+              },
+              {
+                argumentAdvanced: "Many people find cold showers uncomfortable and stressful, not relaxing.",
+                argumentEasy: "Many people think cold showers are unpleasant and stressful, not relaxing.",
+                data: "The body reacts to cold with shivering and strong breathing, which does not feel pleasant for everyone."
+              },
+              {
+                argumentAdvanced: "Warm water is often better for cleaning the body and relaxing muscles.",
+                argumentEasy: "Warm water usually cleans the body better and helps muscles relax.",
+                data: "Warm water helps soap work well and can loosen dirt and oil on the skin more easily."
+              },
+              {
+                argumentAdvanced: "There is limited strong scientific proof that daily cold showers have big long-term health benefits.",
+                argumentEasy: "There is not much strong science that proves cold showers give big health benefits for many years.",
+                data: "Most positive stories about cold showers come from individuals, not from large, controlled studies."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "long_work_hours",
+        title: "Working very long hours",
+        tagline: "Hard work or unhealthy overwork?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Working long hours can help people earn more money.",
+                argumentEasy: "Working more hours can help people earn more money.",
+                data: "Overtime pay or extra jobs can increase a person's monthly income compared with a normal schedule."
+              },
+              {
+                argumentAdvanced: "Some people feel proud and successful when they work a lot.",
+                argumentEasy: "Some people feel proud and successful when they work many hours.",
+                data: "In many cultures, hard work is linked to ideas like ambition, success and being a strong provider for the family."
+              },
+              {
+                argumentAdvanced: "Long hours can help people in competitive jobs build their career faster.",
+                argumentEasy: "In difficult jobs, long hours can help people move up faster in their career.",
+                data: "Young professionals sometimes work late to show commitment, finish more projects and impress their managers."
+              },
+              {
+                argumentAdvanced: "Working more can give some people a sense of purpose and structure.",
+                argumentEasy: "Working a lot can give some people clear routine and purpose in their day.",
+                data: "Having a busy schedule can stop people from feeling bored or lost during the day."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Working too many hours increases stress and the risk of burnout.",
+                argumentEasy: "Working too much makes people very stressed and can lead to burnout.",
+                data: "Constant deadlines and little rest can lead to tiredness, irritability and loss of motivation."
+              },
+              {
+                argumentAdvanced: "Long work hours can damage relationships with family and friends.",
+                argumentEasy: "If you always work late, you have less time for family and friends.",
+                data: "People who often come home late have less time to talk, play with their children or meet friends."
+              },
+              {
+                argumentAdvanced: "Sitting or standing at work all day is bad for physical health.",
+                argumentEasy: "Being at work all day, sitting or standing, is bad for your body.",
+                data: "Office workers who sit for long periods have a higher risk of back problems and other health issues."
+              },
+              {
+                argumentAdvanced: "After many hours of work, concentration and decision-making become worse.",
+                argumentEasy: "After many hours, people think more slowly and make more mistakes.",
+                data: "Tired workers make more mistakes and need more time to finish the same tasks."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "short_sleep",
+        title: "Sleeping only 5–6 hours a night",
+        tagline: "More time in the day, or damage to your health?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Some people say they feel fine with only 5–6 hours of sleep.",
+                argumentEasy: "Some people say they feel okay with only 5–6 hours of sleep.",
+                data: "There are individual differences; a few people do not feel very tired even when they sleep less than others."
+              },
+              {
+                argumentAdvanced: "Sleeping less gives people more time for work, hobbies or study.",
+                argumentEasy: "If you sleep less, you have more time for work, hobbies or schoolwork.",
+                data: "A person who sleeps six hours instead of eight hours has about fourteen extra hours every week."
+              },
+              {
+                argumentAdvanced: "Short sleep can work during busy periods, for example before exams or big projects.",
+                argumentEasy: "Sleeping less can help for a short time, for example before important exams.",
+                data: "Students and workers sometimes reduce sleep for a few days to finish important tasks on time."
+              },
+              {
+                argumentAdvanced: "Some successful people claim they built their careers with short nights and long days.",
+                argumentEasy: "Some famous people say they worked hard with little sleep and became successful.",
+                data: "Biographies of famous leaders and entrepreneurs sometimes describe very short sleeping habits."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Most adults need around 7–9 hours of sleep for good health.",
+                argumentEasy: "Most adults need about 7–9 hours of sleep to stay healthy.",
+                data: "Sleep experts explain that the body and brain repair themselves during the night, which takes several hours."
+              },
+              {
+                argumentAdvanced: "Too little sleep makes it harder to focus and remember things.",
+                argumentEasy: "If you sleep too little, it is harder to focus and remember things.",
+                data: "People who are tired often have slower reaction times and find it more difficult to learn new information."
+              },
+              {
+                argumentAdvanced: "Chronic short sleep can increase the risk of illnesses.",
+                argumentEasy: "If you sleep too little for a long time, you have a higher chance of getting sick.",
+                data: "Lack of sleep is linked with problems such as weight gain, high blood pressure and a weaker immune system."
+              },
+              {
+                argumentAdvanced: "Short sleep over many years can affect mood and mental health.",
+                argumentEasy: "Sleeping too little for many years can make people feel sad, stressed or anxious.",
+                data: "People who sleep less are more likely to feel depressed, stressed or anxious."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "standing_desks",
+        title: "Using a standing desk instead of sitting",
+        tagline: "Stand up for your health, or just another trend?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Standing desks can reduce the time people spend sitting.",
+                argumentEasy: "Standing desks help people sit less during the day.",
+                data: "Office workers often sit for more than seven or eight hours a day, which is linked to health problems."
+              },
+              {
+                argumentAdvanced: "Standing can help some people feel more energetic and focused.",
+                argumentEasy: "Some people feel more awake and focused when they stand at work.",
+                data: "When standing, people move their legs and shift their weight, which can increase blood flow."
+              },
+              {
+                argumentAdvanced: "Standing desks can improve posture for some users.",
+                argumentEasy: "Standing desks can help some people keep a straighter back and better posture.",
+                data: "A screen at eye level and a straight back position may reduce neck and shoulder pain."
+              },
+              {
+                argumentAdvanced: "Height-adjustable desks allow people to switch between sitting and standing.",
+                argumentEasy: "Desks that move up and down let people change between sitting and standing.",
+                data: "Many modern desks can quickly move up or down, so users are not forced to stand all the time."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Standing all day can also be uncomfortable and unhealthy.",
+                argumentEasy: "Standing all day can hurt your feet, legs and back.",
+                data: "Long periods of standing can cause pain in the feet, legs and lower back."
+              },
+              {
+                argumentAdvanced: "A standing desk alone does not replace real exercise.",
+                argumentEasy: "Using a standing desk is not the same as doing real exercise.",
+                data: "Even if they stand, some workers still do not reach the recommended amount of daily physical activity."
+              },
+              {
+                argumentAdvanced: "Standing desks can be expensive and not available in every school or office.",
+                argumentEasy: "Standing desks can cost a lot, so not every school or office can buy them.",
+                data: "Height-adjustable models often cost much more than simple standard desks."
+              },
+              {
+                argumentAdvanced: "Some people do not know how to adjust the desk correctly.",
+                argumentEasy: "If people do not set the desk to the right height, they can still have neck and shoulder pain.",
+                data: "If the screen or keyboard is too high or too low, people can still get neck and shoulder problems."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "daily_social_media",
+        title: "Using social media every day to relax",
+        tagline: "Relaxing habit or digital stress?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Social media can help people relax and forget daily problems for a while.",
+                argumentEasy: "Social media can help people relax and forget their problems for a short time.",
+                data: "Scrolling through funny videos or pictures gives many users a break from school or work stress."
+              },
+              {
+                argumentAdvanced: "It is an easy way to stay in contact with friends and family.",
+                argumentEasy: "It is a simple way to stay in touch with friends and family.",
+                data: "Messaging apps and social networks let people share photos and news instantly, even across countries."
+              },
+              {
+                argumentAdvanced: "Online communities can support people with similar interests or problems.",
+                argumentEasy: "Online groups can help people who have the same hobbies or problems.",
+                data: "Groups about hobbies, health issues or sports teams can make people feel less alone."
+              },
+              {
+                argumentAdvanced: "Short online breaks during the day can feel like small rewards.",
+                argumentEasy: "Short social media breaks can feel like small rewards during the day.",
+                data: "Many people check their phones for a few minutes between tasks as a quick mental rest."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Spending a lot of time on social media can become addictive.",
+                argumentEasy: "Using social media too much can become a bad habit that is hard to stop.",
+                data: "Some users find it hard to stop scrolling and lose track of time, even when they have other things to do."
+              },
+              {
+                argumentAdvanced: "Social media can increase stress, jealousy and fear of missing out.",
+                argumentEasy: "Social media can make people feel stressed, jealous and afraid of missing something.",
+                data: "People often see only the best moments of others' lives and compare them with their own normal days."
+              },
+              {
+                argumentAdvanced: "Heavy social media use is linked to sleep problems.",
+                argumentEasy: "Using social media a lot, especially at night, can make it harder to sleep.",
+                data: "Using a phone late at night exposes the eyes to bright light and keeps the brain active."
+              },
+              {
+                argumentAdvanced: "Online spaces can expose people to bullying and hate speech.",
+                argumentEasy: "On social media, people can get mean comments or online bullying.",
+                data: "Negative comments and cyberbullying can strongly hurt mental health, especially for teenagers."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "red_wine_small",
+        title: "Drinking small amounts of red wine regularly",
+        tagline: "A healthy tradition or a risky habit?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Some people believe a small glass of red wine can help heart health.",
+                argumentEasy: "Some people think a small glass of red wine is good for the heart.",
+                data: "Red wine contains substances from grapes that may have a positive effect on blood vessels."
+              },
+              {
+                argumentAdvanced: "A small drink with dinner can help people relax and enjoy social time.",
+                argumentEasy: "A small glass of wine with dinner can help people relax and enjoy time with others.",
+                data: "In some cultures, it is normal to drink a glass of wine slowly with a meal and friends."
+              },
+              {
+                argumentAdvanced: "Moderate drinking is different from heavy drinking.",
+                argumentEasy: "Drinking a little wine is not the same as drinking a lot.",
+                data: "A small glass of wine a few times a week is a much lower amount of alcohol than several drinks every day."
+              },
+              {
+                argumentAdvanced: "Red wine can be part of a traditional Mediterranean-style diet.",
+                argumentEasy: "In some countries, people drink some red wine as part of a traditional healthy diet.",
+                data: "People in some Mediterranean regions often eat lots of vegetables, fish and olive oil and also drink some wine."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Alcohol is still a drug, even in small amounts.",
+                argumentEasy: "Alcohol is still a drug, even if you drink only a little.",
+                data: "Wine contains ethanol, which affects the brain and can change behaviour and reaction time."
+              },
+              {
+                argumentAdvanced: "For some people, even a little alcohol can be risky.",
+                argumentEasy: "For some people, even a small amount of alcohol is dangerous.",
+                data: "People with liver disease, certain medical conditions or a family history of addiction are often told not to drink."
+              },
+              {
+                argumentAdvanced: "Small amounts can easily become larger over time.",
+                argumentEasy: "People can slowly start drinking more than just a small glass.",
+                data: "Someone who starts with one small glass might slowly increase the amount without noticing."
+              },
+              {
+                argumentAdvanced: "There are non-alcoholic ways to relax and support heart health.",
+                argumentEasy: "There are many ways to relax and protect your heart without alcohol.",
+                data: "Regular exercise, not smoking and a balanced diet can help the heart without any alcohol."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "low_carb_keto",
+        title: "Following a very low-carb or keto diet",
+        tagline: "Smart weight loss or unbalanced eating?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Low-carb diets can help some people lose weight quickly.",
+                argumentEasy: "Eating very few carbs can help some people lose weight fast.",
+                data: "When people reduce bread, pasta and sugar, they often eat fewer calories and lose body fat."
+              },
+              {
+                argumentAdvanced: "Some people feel less hungry on a keto diet.",
+                argumentEasy: "Some people say they are less hungry when they eat a lot of fat and protein and very few carbs.",
+                data: "High-fat and high-protein foods can make people feel full for a longer time after meals."
+              },
+              {
+                argumentAdvanced: "Low-carb diets can lower the amount of sugar in the blood for some people.",
+                argumentEasy: "Eating fewer carbs can lower blood sugar for some people.",
+                data: "People with blood sugar problems sometimes see improvements when they cut down on sweet foods and drinks."
+              },
+              {
+                argumentAdvanced: "The diet focuses on simple, unprocessed foods like meat, eggs and vegetables.",
+                argumentEasy: "Keto diets often use simple foods like meat, eggs and vegetables instead of sweets and snacks.",
+                data: "Many keto meal plans remove sweets, sugary drinks and many packaged snacks."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Very low-carb diets can be hard to follow for a long time.",
+                argumentEasy: "It is hard to stay on a very low-carb diet for a long time.",
+                data: "Many popular foods such as bread, rice, fruit and some snacks are not allowed or are very limited."
+              },
+              {
+                argumentAdvanced: "Cutting out many food groups can mean missing important nutrients.",
+                argumentEasy: "If you stop eating many types of food, you may miss important vitamins and fibre.",
+                data: "Whole grains and some fruits contain fibre, vitamins and minerals that support digestion and health."
+              },
+              {
+                argumentAdvanced: "The first weeks of keto can cause side effects.",
+                argumentEasy: "In the first weeks of keto, people can feel tired or get headaches.",
+                data: "People sometimes report headaches, tiredness and bad mood when their body changes from using carbs to using fat for energy."
+              },
+              {
+                argumentAdvanced: "Very high fat intake may not be suitable for everyone.",
+                argumentEasy: "Eating a lot of fat is not good for everyone.",
+                data: "People with certain heart or cholesterol problems are advised to be careful with very fatty diets."
+              }
+            ]
+          }
+        }
+      },
+      {
+        id: "intense_workouts",
+        title: "Practising intense 'hustle' workouts like CrossFit",
+        tagline: "Powerful training or injury waiting to happen?",
+        sides: {
+          pro: {
+            arguments: [
+              {
+                argumentAdvanced: "Intense workouts can quickly improve strength and fitness.",
+                argumentEasy: "Very hard workouts can make people stronger and fitter quite quickly.",
+                data: "High-intensity training uses many muscles at the same time and raises the heart rate a lot."
+              },
+              {
+                argumentAdvanced: "Group workouts can be very motivating and social.",
+                argumentEasy: "Training in a group can be fun and helps people stay motivated.",
+                data: "People often train together, cheer for each other and feel part of a community."
+              },
+              {
+                argumentAdvanced: "Fast, hard sessions can fit into a busy schedule.",
+                argumentEasy: "Short but hard workouts fit well into busy lives.",
+                data: "Some high-intensity classes last only 20–30 minutes but feel very demanding."
+              },
+              {
+                argumentAdvanced: "Varied exercises keep training interesting.",
+                argumentEasy: "These workouts mix many different exercises, so training is not boring.",
+                data: "Workouts often mix running, lifting, jumping and body-weight exercises, so they are not always the same."
+              }
+            ]
+          },
+          con: {
+            arguments: [
+              {
+                argumentAdvanced: "Very intense workouts have a higher risk of injury.",
+                argumentEasy: "Very hard workouts make it easier to get injured.",
+                data: "Hard exercises with heavy weights or fast movements can hurt joints and muscles if technique is poor."
+              },
+              {
+                argumentAdvanced: "These workouts are not suitable for everyone.",
+                argumentEasy: "Not everyone can safely do these very hard workouts.",
+                data: "People with heart problems, joint issues or no training experience may need a much gentler program."
+              },
+              {
+                argumentAdvanced: "The culture of 'push harder' can ignore warning signs from the body.",
+                argumentEasy: "People may feel pressure to push too hard and ignore pain or strong tiredness.",
+                data: "Some people feel pressure to finish every workout even when they feel pain or extreme tiredness."
+              },
+              {
+                argumentAdvanced: "CrossFit-style classes can be expensive and need special places or equipment.",
+                argumentEasy: "These classes can be expensive and need special gyms and equipment.",
+                data: "Membership fees, coaching and equipment often cost more than a simple gym or home workout."
+              }
+            ]
+          }
+        }
+      }
+    ];
+
+    // App state
+    let currentLevel = "easy"; // "easy" or "advanced"
+    let currentTopicId = null;
+    let currentSide = null; // "pro" or "con"
+    let currentFactCount = 1;
+    let showHelp = false;
+
+    // DOM elements
+    const viewHome = document.getElementById("view-home");
+    const viewSide = document.getElementById("view-side");
+    const viewDebate = document.getElementById("view-debate");
+
+    const topicsGrid = document.getElementById("topics-grid");
+
+    const levelEasyBtn = document.getElementById("level-easy");
+    const levelAdvancedBtn = document.getElementById("level-advanced");
+
+    const sideTopicTitle = document.getElementById("side-topic-title");
+    const sideTopicSubtitle = document.getElementById("side-topic-subtitle");
+    const sideLevelLabel = document.getElementById("side-level-label");
+
+    const btnBackToHome = document.getElementById("btn-back-to-home");
+    const btnSideFor = document.getElementById("btn-side-for");
+    const btnSideAgainst = document.getElementById("btn-side-against");
+
+    const btnDebateBack = document.getElementById("btn-debate-back");
+    const btnSwitchSide = document.getElementById("btn-switch-side");
+
+    const debateTopicTitle = document.getElementById("debate-topic-title");
+    const currentSideLabel = document.getElementById("current-side-label");
+    const factsContainer = document.getElementById("facts-container");
+    const factsLevelIndicator = document.getElementById("facts-level-indicator");
+    const debateLevelLabel = document.getElementById("debate-level-label");
+
+    const btnNextFact = document.getElementById("btn-next-fact");
+    const btnShowAll = document.getElementById("btn-show-all");
+    const btnShowHelp = document.getElementById("btn-show-help");
+    const btnHideHelp = document.getElementById("btn-hide-help");
+
+    const notesInput = document.getElementById("notes-input");
+    const btnClearNotes = document.getElementById("btn-clear-notes");
+
+    function setView(viewName) {
+      viewHome.classList.remove("active");
+      viewSide.classList.remove("active");
+      viewDebate.classList.remove("active");
+
+      if (viewName === "home") viewHome.classList.add("active");
+      if (viewName === "side") viewSide.classList.add("active");
+      if (viewName === "debate") viewDebate.classList.add("active");
+    }
+
+    function getCurrentTopic() {
+      return debateTopics.find(t => t.id === currentTopicId) || null;
+    }
+
+    function renderTopics() {
+      topicsGrid.innerHTML = "";
+      debateTopics.forEach(topic => {
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "card topic-card";
+        card.setAttribute("data-topic-id", topic.id);
+
+        const pill = document.createElement("div");
+        pill.className = "topic-pill";
+        pill.textContent = "Debate topic";
+
+        const h3 = document.createElement("h3");
+        h3.textContent = topic.title;
+
+        const p = document.createElement("p");
+        p.textContent = topic.tagline || "Click to debate this behaviour.";
+
+        const tagline = document.createElement("div");
+        tagline.className = "topic-tagline";
+        tagline.textContent = "Healthy or unhealthy?";
+
+        card.appendChild(pill);
+        card.appendChild(h3);
+        card.appendChild(p);
+        card.appendChild(tagline);
+
+        card.addEventListener("click", () => {
+          currentTopicId = topic.id;
+          currentSide = null;
+          showHelp = false;
+          currentFactCount = 1;
+          updateSideView();
+          setView("side");
+        });
+
+        topicsGrid.appendChild(card);
+      });
+    }
+
+    function updateLevelUI() {
+      if (currentLevel === "easy") {
+        levelEasyBtn.classList.add("active");
+        levelAdvancedBtn.classList.remove("active");
+        factsLevelIndicator.textContent = "Easy English";
+      } else {
+        levelEasyBtn.classList.remove("active");
+        levelAdvancedBtn.classList.add("active");
+        factsLevelIndicator.textContent = "Advanced English";
+      }
+
+      sideLevelLabel.textContent = currentLevel === "easy"
+        ? "You are using Easy English. Students can change this anytime."
+        : "You are using Advanced English. Students can change this anytime.";
+
+      debateLevelLabel.textContent = currentLevel === "easy"
+        ? "Current level: Easy English (simpler model arguments)."
+        : "Current level: Advanced English (longer, more complex arguments).";
+
+      // If we are already in debate view with help visible, re-render facts to update argument texts
+      if (viewDebate.classList.contains("active")) {
+        renderFacts();
+      }
+    }
+
+    function updateSideView() {
+      const topic = getCurrentTopic();
+      if (!topic) return;
+      sideTopicTitle.textContent = topic.title;
+      sideTopicSubtitle.textContent = "Are you going to argue that this behaviour is healthy/helpful or unhealthy/harmful?";
+      updateLevelUI();
+    }
+
+    function getSideLabelText() {
+      if (currentSide === "pro") {
+        return "You are arguing FOR this habit. You want to show it is more healthy or helpful than people think.";
+      } else if (currentSide === "con") {
+        return "You are arguing AGAINST this habit. You want to show it is more unhealthy or harmful than people think.";
+      }
+      return "";
+    }
+
+    function updateDebateHeader() {
+      const topic = getCurrentTopic();
+      if (!topic) return;
+      debateTopicTitle.textContent = topic.title;
+      currentSideLabel.textContent = getSideLabelText();
+    }
+
+    function getCurrentArguments() {
+      const topic = getCurrentTopic();
+      if (!topic || !currentSide) return [];
+      const sideData = topic.sides[currentSide];
+      if (!sideData) return [];
+      return sideData.arguments || [];
+    }
+
+    function renderFacts() {
+      const argumentsList = getCurrentArguments();
+      if (!argumentsList.length) {
+        factsContainer.innerHTML = "<p class=\"pill-info\">No facts found for this side.</p>";
+        return;
+      }
+
+      if (currentFactCount < 1) currentFactCount = 1;
+      if (currentFactCount > argumentsList.length) currentFactCount = argumentsList.length;
+
+      factsContainer.innerHTML = "";
+
+      for (let i = 0; i < currentFactCount; i++) {
+        const item = argumentsList[i];
+        const card = document.createElement("div");
+        card.className = "fact-card";
+
+        const index = document.createElement("div");
+        index.className = "fact-index";
+        index.textContent = "Fact " + (i + 1);
+
+        const factText = document.createElement("div");
+        factText.className = "fact-text";
+        factText.textContent = item.data;
+
+        card.appendChild(index);
+        card.appendChild(factText);
+
+        if (showHelp) {
+          const argText = document.createElement("div");
+          argText.className = "argument-text";
+          const txt = currentLevel === "easy" ? item.argumentEasy : item.argumentAdvanced;
+          argText.textContent = txt;
+          card.appendChild(argText);
+        }
+
+        factsContainer.appendChild(card);
+      }
+
+      // Update button states
+      if (currentFactCount >= argumentsList.length) {
+        btnNextFact.disabled = true;
+      } else {
+        btnNextFact.disabled = false;
+      }
+    }
+
+    function resetDebateState() {
+      currentFactCount = 1;
+      showHelp = false;
+      notesInput.value = "";
+    }
+
+    function startDebateOnSide(side) {
+      currentSide = side;
+      resetDebateState();
+      updateDebateHeader();
+      updateLevelUI();
+      renderFacts();
+      setView("debate");
+    }
+
+    // Event listeners
+
+    levelEasyBtn.addEventListener("click", () => {
+      currentLevel = "easy";
+      updateLevelUI();
+    });
+
+    levelAdvancedBtn.addEventListener("click", () => {
+      currentLevel = "advanced";
+      updateLevelUI();
+    });
+
+    btnBackToHome.addEventListener("click", () => {
+      setView("home");
+    });
+
+    btnSideFor.addEventListener("click", () => {
+      startDebateOnSide("pro");
+    });
+
+    btnSideAgainst.addEventListener("click", () => {
+      startDebateOnSide("con");
+    });
+
+    btnDebateBack.addEventListener("click", () => {
+      setView("home");
+    });
+
+    btnSwitchSide.addEventListener("click", () => {
+      if (!currentSide) return;
+      currentSide = currentSide === "pro" ? "con" : "pro";
+      resetDebateState();
+      updateDebateHeader();
+      renderFacts();
+    });
+
+    btnNextFact.addEventListener("click", () => {
+      const args = getCurrentArguments();
+      if (!args.length) return;
+      if (currentFactCount < args.length) {
+        currentFactCount += 1;
+        renderFacts();
+      }
+    });
+
+    btnShowAll.addEventListener("click", () => {
+      const args = getCurrentArguments();
+      if (!args.length) return;
+      currentFactCount = args.length;
+      renderFacts();
+    });
+
+    btnShowHelp.addEventListener("click", () => {
+      showHelp = true;
+      renderFacts();
+    });
+
+    btnHideHelp.addEventListener("click", () => {
+      showHelp = false;
+      renderFacts();
+    });
+
+    btnClearNotes.addEventListener("click", () => {
+      notesInput.value = "";
+    });
+
+    btnDebateBack.addEventListener("click", () => {
+      setView("home");
+    });
+
+    // Initialise
+    renderTopics();
+    updateLevelUI();
+  </script>
+</body>
+</html>
