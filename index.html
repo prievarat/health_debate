@@ -4,63 +4,115 @@
   <meta charset="UTF-8" />
   <title>Healthy or Unhealthy? Debate Game</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
   <style>
+    /* Fonts from House Hunter */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Nunito:wght@400;600&display=swap');
+
     :root {
-      --primary-300:#F9C97A;
-      --primary-500:#F4A329;
-      --primary-700:#B45309;
-      --secondary-300:#7EDAD6;
-      --secondary-500:#2BB6B4;
-      --secondary-700:#0F766E;
-      --accent-300:#F49DB8;
-      --accent-500:#E8467B;
-      --accent-700:#A61E4D;
-      --bg:#FFF7F2;
-      --surface:#FFFFFF;
-      --surface-alt:#F5F7FA;
-      --border:#E6E9EF;
-      --text:#1F2937;
-      --text-2:#4B5563;
-      --text-muted:#6B7280;
-      --text-inverse:#FFFFFF;
-      --success:#2F9E44;
-      --warning:#F59F00;
-      --error:#D92D20;
-      --info:#2563EB;
+      --primary-300: #F9C97A;
+      --primary-500: #F4A329;
+      --primary-700: #B45309;
+      --secondary-300: #7EDAD6;
+      --secondary-500: #2BB6B4;
+      --secondary-700: #0F766E;
+      --accent-300: #F49DB8;
+      --accent-500: #E8467B;
+      --accent-700: #A61E4D;
+      --bg: #FFF7F2;
+      --surface: #FFFFFF;
+      --surface-alt: #F5F7FA;
+      --border: #E6E9EF;
+      --text: #111827;
+      --text-2: #4B5563;
+      --text-muted: #6B7280;
+      --text-inverse: #FFFFFF;
+
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+
+      --radius-card: 16px;
+      --radius-pill: 9999px;
+
+      --shadow-card: 0 4px 14px rgba(17, 24, 39, 0.08);
+
+      --font-main: "Inter", "Nunito", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --text-body: 16px;
+      --text-h1: 28px;
+      --text-h2: 22px;
+      --text-h3: 18px;
     }
 
-    * {
+    *, *::before, *::after {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      margin: 0;
-      font-family: "Inter", "Nunito", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      font-size: 16px;
+      font-family: var(--font-main);
+      background-color: var(--bg);
       color: var(--text);
-      background: radial-gradient(circle at top left, #ffe7c8 0, #fff7f2 45%, #f5f7fa 100%);
-      min-height: 100vh;
+      font-size: var(--text-body);
+      line-height: 1.6;
+      padding: var(--spacing-lg) var(--spacing-md) var(--spacing-xl);
+      -webkit-font-smoothing: antialiased;
     }
 
     .app-shell {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 24px 16px 40px;
     }
 
-    header.app-header {
+    h1, h2, h3 {
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    h1 { font-size: var(--text-h1); }
+    h2 { font-size: var(--text-h2); }
+    h3 { font-size: var(--text-h3); }
+
+    p {
+      color: var(--text-2);
+      margin-bottom: var(--spacing-sm);
+      font-size: 15px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: var(--spacing-md);
+    }
+
+    .card-soft {
+      background: var(--surface-alt);
+      border-style: dashed;
+    }
+
+    .view { display: none; }
+    .view.active { display: block; }
+
+    /* Header */
+
+    .app-header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 16px;
-      margin-bottom: 24px;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
     }
 
     .app-title-group h1 {
-      font-size: 32px;
-      margin: 0 0 4px;
+      margin-bottom: 4px;
       color: var(--primary-700);
-      letter-spacing: 0.02em;
     }
 
     .app-title-group p {
@@ -73,22 +125,22 @@
       display: inline-flex;
       align-items: center;
       background: var(--surface);
-      border-radius: 9999px;
+      border-radius: var(--radius-pill);
       border: 1px solid var(--border);
-      box-shadow: 0 4px 14px rgba(17,24,39,0.08);
-      padding: 4px;
-      gap: 4px;
+      padding: 3px;
+      gap: 2px;
+      box-shadow: var(--shadow-card);
     }
 
     .level-toggle button {
       border: none;
       background: transparent;
-      padding: 8px 16px;
-      font-size: 14px;
-      border-radius: 9999px;
+      padding: 6px 14px;
+      font-size: 13px;
+      border-radius: var(--radius-pill);
       cursor: pointer;
       color: var(--text-muted);
-      transition: background 180ms ease, color 180ms ease;
+      transition: background 150ms ease, color 150ms ease;
     }
 
     .level-toggle button.active {
@@ -96,385 +148,264 @@
       color: var(--text-inverse);
     }
 
-    main {
-      display: block;
-    }
-
-    .card {
-      background: var(--surface);
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 14px rgba(17,24,39,0.08);
-      padding: 20px;
-    }
-
-    .surface-alt {
-      background: var(--surface-alt);
-    }
-
-    .view {
-      display: none;
-    }
-
-    .view.active {
-      display: block;
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
+    /* Buttons */
 
     .btn {
-      border-radius: 9999px;
-      border: 1px solid transparent;
-      padding: 8px 16px;
-      font-size: 14px;
-      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      transition: background 180ms ease, color 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-pill);
+      border: 1px solid transparent;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
       white-space: nowrap;
-    }
-
-    .btn:focus-visible {
-      outline: 2px solid var(--secondary-500);
-      outline-offset: 2px;
+      transition: all 160ms ease;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--primary-700), var(--primary-500));
+      background-color: var(--primary-700);
       color: var(--text-inverse);
       border-color: var(--primary-700);
     }
 
     .btn-primary:hover {
       filter: brightness(0.95);
-      box-shadow: 0 6px 18px rgba(180,83,9,0.25);
+      box-shadow: 0 3px 8px rgba(180, 83, 9, 0.35);
     }
 
     .btn-secondary {
-      background: transparent;
+      background-color: transparent;
       color: var(--primary-700);
       border-color: var(--primary-300);
     }
 
     .btn-secondary:hover {
-      background: rgba(249,201,122,0.16);
+      background-color: rgba(249, 201, 122, 0.25);
     }
 
     .btn-ghost {
       background: transparent;
-      color: var(--text-2);
+      color: var(--text-muted);
       border-color: transparent;
+      padding-inline: 0;
     }
 
     .btn-ghost:hover {
-      background: rgba(226,232,240,0.5);
+      color: var(--text);
+      background-color: rgba(107, 114, 128, 0.08);
     }
 
-    .btn-danger {
-      background: var(--error);
-      color: var(--text-inverse);
+    .btn[disabled] {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
     }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 2px 10px;
-      border-radius: 9999px;
-      font-size: 12px;
-      background: var(--secondary-300);
-      color: var(--secondary-700);
-      font-weight: 600;
-    }
-
-    .badge-outline {
-      background: transparent;
-      border: 1px solid var(--secondary-500);
-      color: var(--secondary-700);
-    }
-
-    /* Home / topics view */
-
-    #view-home .intro {
+    .btn-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 16px;
-      align-items: flex-start;
-      margin-bottom: 20px;
+      gap: var(--spacing-sm);
     }
 
-    #view-home .intro-text {
-      flex: 1 1 260px;
-    }
+    /* Pills / small labels */
 
-    #view-home .intro h2 {
-      font-size: 24px;
-      margin: 0 0 8px;
-      color: var(--text);
-    }
-
-    #view-home .intro p {
-      margin: 0 0 4px;
-      font-size: 14px;
-      color: var(--text-2);
-    }
-
-    #view-home .hint {
-      font-size: 13px;
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--surface-alt);
       color: var(--text-muted);
+      border: 1px solid var(--border);
+      margin-bottom: var(--spacing-xs);
     }
 
-    .topics-grid {
-      margin-top: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-    }
-
-    .topic-card {
-      cursor: pointer;
-      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .topic-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(17,24,39,0.12);
-      border-color: var(--primary-300);
-    }
-
-    .topic-pill {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
-    }
-
-    .topic-card h3 {
-      font-size: 18px;
-      margin: 0 0 8px;
-      color: var(--text);
-    }
-
-    .topic-card p {
-      margin: 0 0 12px;
-      font-size: 14px;
-      color: var(--text-2);
-    }
-
-    .topic-tagline {
-      font-size: 13px;
+    .pill-step {
+      background: #FFF1DF;
+      border-color: #FED7AA;
       color: var(--primary-700);
       font-weight: 600;
     }
 
-    /* Side selection */
-
-    #view-side h2 {
-      font-size: 24px;
-      margin: 0 0 4px;
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
     }
 
-    #view-side p {
-      margin: 0 0 16px;
-      font-size: 14px;
-      color: var(--text-2);
+    .toolbar-info {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .hint {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* HOME VIEW */
+
+    #view-home .home-header {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .topics-grid {
+      margin-top: var(--spacing-sm);
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: var(--spacing-md);
+    }
+
+    .topic-card {
+      cursor: pointer;
+      text-align: left;
+      padding: var(--spacing-md);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      transition: all 160ms ease;
+    }
+
+    .topic-card:hover {
+      border-color: var(--secondary-500);
+      background: var(--surface);
+      box-shadow: 0 4px 14px rgba(17, 24, 39, 0.10);
+    }
+
+    .topic-card h3 {
+      margin: 4px 0 4px;
+      font-size: 16px;
+    }
+
+    .topic-card p {
+      margin: 0;
+      font-size: 13px;
+    }
+
+    .topic-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* SIDE VIEW */
+
+    #view-side h2 {
+      margin-top: var(--spacing-xs);
+      margin-bottom: var(--spacing-xs);
     }
 
     .side-buttons {
+      margin-top: var(--spacing-sm);
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 12px;
+      gap: var(--spacing-sm);
     }
 
-    .side-label {
+    .small-note {
       font-size: 13px;
       color: var(--text-muted);
-      margin-top: 4px;
+      margin-top: var(--spacing-sm);
     }
 
-    /* Debate view */
-
-    #view-debate-header {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 16px;
-    }
+    /* DEBATE VIEW */
 
     #view-debate-header h2 {
-      margin: 0;
-      font-size: 24px;
+      margin-bottom: 4px;
     }
 
     #current-side-label {
       font-size: 14px;
-      font-weight: 600;
-      color: var(--accent-700);
+      color: var(--secondary-700);
     }
 
-    .layout-two-columns {
-      display: grid;
-      grid-template-columns: minmax(0, 2fr) minmax(0, 1.4fr);
-      gap: 16px;
-    }
-
-    @media (max-width: 900px) {
-      .layout-two-columns {
-        grid-template-columns: minmax(0, 1fr);
-      }
+    .facts-card {
+      margin-top: var(--spacing-md);
     }
 
     .facts-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-xs);
     }
 
     .facts-header h3 {
       margin: 0;
-      font-size: 18px;
-    }
-
-    .facts-footer {
-      margin-top: 8px;
-      font-size: 13px;
-      color: var(--text-muted);
     }
 
     .facts-list {
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-top: 8px;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-sm);
     }
 
     .fact-card {
       background: var(--surface-alt);
       border-radius: 12px;
-      padding: 10px 12px;
       border: 1px solid var(--border);
+      padding: var(--spacing-sm) var(--spacing-md);
     }
 
     .fact-index {
-      font-size: 12px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       color: var(--text-muted);
-      margin-bottom: 4px;
+      margin-bottom: 2px;
     }
 
     .fact-text {
       font-size: 14px;
       color: var(--text-2);
-      margin-bottom: 4px;
     }
 
     .argument-text {
-      font-size: 14px;
-      color: var(--primary-700);
-      border-top: 1px dashed rgba(191,219,254,0.9);
-      padding-top: 4px;
       margin-top: 4px;
-    }
-
-    .notes-area label {
-      display: block;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 6px;
-      color: var(--text-2);
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 140px;
-      resize: vertical;
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--border);
-      font-family: inherit;
-      font-size: 14px;
-      color: var(--text);
-      background: var(--surface);
-      transition: border-color 160ms ease, box-shadow 160ms ease;
-    }
-
-    textarea:focus-visible {
-      outline: none;
-      border-color: var(--secondary-500);
-      box-shadow: 0 0 0 2px rgba(43,182,180,0.15);
-    }
-
-    .speaking-card h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
-
-    .speaking-card p {
-      margin: 0 0 6px;
-      font-size: 14px;
-      color: var(--text-2);
-    }
-
-    .bullet-list {
-      margin: 4px 0 0 16px;
-      padding-left: 0;
+      padding-top: 4px;
+      border-top: 1px dashed var(--border);
       font-size: 13px;
+      color: var(--primary-700);
+    }
+
+    .facts-footer {
+      margin-top: var(--spacing-sm);
+      font-size: 12px;
       color: var(--text-muted);
     }
 
-    .bullet-list li {
-      margin-bottom: 2px;
-    }
+    @media (max-width: 768px) {
+      body {
+        padding-inline: var(--spacing-sm);
+      }
 
-    .reflection-card h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
+      .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
-    .reflection-card ol {
-      margin: 0 0 0 18px;
-      padding-left: 0;
-      font-size: 14px;
-      color: var(--text-2);
-    }
+      .toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
 
-    .reflection-card li {
-      margin-bottom: 4px;
-    }
-
-    .toolbar-top {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 16px;
-      justify-content: space-between;
-    }
-
-    .toolbar-top-left,
-    .toolbar-top-right {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .pill-info {
-      font-size: 13px;
-      color: var(--text-muted);
+      .facts-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
@@ -483,7 +414,7 @@
     <header class="app-header">
       <div class="app-title-group">
         <h1>Healthy or Unhealthy?</h1>
-        <p>Classroom debate game based on real-life habits and behaviours.</p>
+        <p>Debate real-life habits using facts, not just opinions.</p>
       </div>
       <div class="level-toggle" aria-label="Language level">
         <button type="button" id="level-easy" class="active">Easy English</button>
@@ -495,130 +426,76 @@
       <!-- HOME VIEW -->
       <section id="view-home" class="view active">
         <div class="card">
-          <div class="intro">
-            <div class="intro-text">
-              <h2>1. Choose a topic to debate</h2>
-              <p>Click on a card, then decide if you are <strong>FOR</strong> or <strong>AGAINST</strong> the habit.</p>
-              <p class="hint">Tip for teachers: assign different topics to pairs or halves of the class.</p>
-            </div>
-            <div class="card surface-alt" style="flex: 0 1 260px;">
-              <span class="badge badge-outline">Game flow</span>
-              <p style="margin: 8px 0 4px; font-size: 14px; color: var(--text-2);">
-                1. Choose topic & side<br>
-                2. Read the facts<br>
-                3. Write your own arguments<br>
-                4. Use Help if needed<br>
-                5. Speak and debate
-              </p>
-              <p class="hint">Students can switch between Easy and Advanced English at any time.</p>
-            </div>
+          <div class="home-header">
+            <span class="pill pill-step">Step 1</span>
+            <h2>Choose a topic to debate</h2>
+            <p>Click a card, then decide if you are <strong>FOR</strong> or <strong>AGAINST</strong> the habit.</p>
           </div>
-
-          <div class="topics-grid" id="topics-grid">
-            <!-- Topic cards injected by JS -->
-          </div>
+          <div class="topics-grid" id="topics-grid"></div>
         </div>
       </section>
 
       <!-- SIDE SELECTION VIEW -->
       <section id="view-side" class="view">
         <div class="card">
-          <div class="toolbar-top">
-            <div class="toolbar-top-left">
-              <button class="btn btn-ghost" type="button" id="btn-back-to-home">&larr; Back to topics</button>
-            </div>
-            <div class="toolbar-top-right">
-              <span class="pill-info" id="side-level-label"></span>
-            </div>
+          <div class="toolbar">
+            <button class="btn btn-ghost" type="button" id="btn-back-to-home">&larr; Back to topics</button>
+            <span class="toolbar-info" id="side-level-label"></span>
           </div>
+
+          <span class="pill pill-step">Step 2</span>
           <h2 id="side-topic-title"></h2>
-          <p id="side-topic-subtitle">
-            Are you going to argue that this behaviour is <strong>healthy/helpful</strong> or <strong>unhealthy/harmful</strong>?
-          </p>
+          <p>Are you going to argue that this behaviour is <strong>healthy/helpful</strong> or <strong>unhealthy/harmful</strong>?</p>
+
           <div class="side-buttons">
             <button class="btn btn-primary" type="button" id="btn-side-for">FOR this habit</button>
             <button class="btn btn-secondary" type="button" id="btn-side-against">AGAINST this habit</button>
           </div>
-          <p class="side-label">
-            Tip: you can also ask students to defend the side they personally disagree with.
+          <p class="small-note">
+            Tip for teachers: you can also ask students to defend the side they personally disagree with.
           </p>
         </div>
       </section>
 
       <!-- DEBATE VIEW -->
       <section id="view-debate" class="view">
-        <div class="toolbar-top">
-          <div class="toolbar-top-left">
+        <div class="toolbar">
+          <div class="btn-row">
             <button class="btn btn-ghost" type="button" id="btn-debate-back">&larr; Back to topics</button>
             <button class="btn btn-secondary" type="button" id="btn-switch-side">Switch side</button>
           </div>
-          <div class="toolbar-top-right">
-            <span class="pill-info" id="debate-level-label"></span>
-          </div>
+          <span class="toolbar-info" id="debate-level-label"></span>
         </div>
 
-        <div id="view-debate-header">
-          <div>
-            <h2 id="debate-topic-title"></h2>
-            <div id="current-side-label"></div>
-          </div>
+        <div id="view-debate-header" class="card card-soft">
+          <span class="pill pill-step">Step 3</span>
+          <h2 id="debate-topic-title"></h2>
+          <p id="current-side-label"></p>
         </div>
 
-        <div class="layout-two-columns">
-          <!-- Left column: Facts and Help -->
-          <div class="card">
-            <div class="facts-header">
-              <h3>Facts for your side</h3>
-              <div class="btn-row">
-                <button class="btn btn-secondary" type="button" id="btn-next-fact">Show next fact</button>
-                <button class="btn btn-ghost" type="button" id="btn-show-all">Show all facts</button>
-              </div>
-            </div>
-            <p class="pill-info">
-              Read the facts first. Use them to build your own arguments. If you get stuck, click “Show Help”.
-            </p>
-            <div class="facts-list" id="facts-container">
-              <!-- Facts injected by JS -->
-            </div>
-            <div class="facts-footer">
-              <strong>Help:</strong> model arguments will use
-              <span id="facts-level-indicator">Easy English</span>.
-              You can change the level at the top of the page.
-            </div>
-            <div style="margin-top: 12px;" class="btn-row">
-              <button class="btn btn-primary" type="button" id="btn-show-help">Show Help (model arguments)</button>
-              <button class="btn btn-ghost" type="button" id="btn-hide-help">Hide Help</button>
+        <div class="card facts-card">
+          <div class="facts-header">
+            <h3>Facts for your side</h3>
+            <div class="btn-row">
+              <button class="btn btn-secondary" type="button" id="btn-next-fact">Next fact</button>
+              <button class="btn btn-ghost" type="button" id="btn-show-all">Show all facts</button>
             </div>
           </div>
+          <p class="hint">
+            First read the facts. Then create your own arguments. If you are stuck, click “Show Help” to see model arguments.
+          </p>
 
-          <!-- Right column: Notes and speaking -->
-          <div class="card surface-alt">
-            <div class="notes-area">
-              <label for="notes-input">Your notes and arguments</label>
-              <textarea id="notes-input" placeholder="Write 2–3 arguments for your side. Try to include at least one fact in each argument."></textarea>
-              <div class="btn-row" style="margin-top: 8px;">
-                <button class="btn btn-ghost" type="button" id="btn-clear-notes">Clear notes</button>
-              </div>
-            </div>
+          <div class="facts-list" id="facts-container"></div>
 
-            <div class="card speaking-card" style="margin-top: 16px;">
-              <h3>Speaking round</h3>
-              <p>Now debate with your partner or group.</p>
-              <ul class="bullet-list">
-                <li>Use at least two arguments.</li>
-                <li>Refer to the facts (for example: “One fact says that…”).</li>
-                <li>Try to use linkers: because, so, however, for example.</li>
-              </ul>
-            </div>
+          <div class="facts-footer">
+            Model arguments will appear in
+            <strong><span id="facts-level-indicator">Easy English</span></strong>.
+            Change the level at the top of the page.
+          </div>
 
-            <div class="card reflection-card" style="margin-top: 16px;">
-              <h3>Reflection</h3>
-              <ol>
-                <li>Which argument was the most convincing in your debate?</li>
-                <li>Did any fact change your opinion about this habit?</li>
-                <li>Is this habit more healthy or more unhealthy in your view now?</li>
-              </ol>
-            </div>
+          <div class="btn-row" style="margin-top: 12px;">
+            <button class="btn btn-primary" type="button" id="btn-show-help">Show Help (model arguments)</button>
+            <button class="btn btn-ghost" type="button" id="btn-hide-help">Hide Help</button>
           </div>
         </div>
       </section>
@@ -1198,7 +1075,6 @@
     const levelAdvancedBtn = document.getElementById("level-advanced");
 
     const sideTopicTitle = document.getElementById("side-topic-title");
-    const sideTopicSubtitle = document.getElementById("side-topic-subtitle");
     const sideLevelLabel = document.getElementById("side-level-label");
 
     const btnBackToHome = document.getElementById("btn-back-to-home");
@@ -1219,9 +1095,6 @@
     const btnShowHelp = document.getElementById("btn-show-help");
     const btnHideHelp = document.getElementById("btn-hide-help");
 
-    const notesInput = document.getElementById("notes-input");
-    const btnClearNotes = document.getElementById("btn-clear-notes");
-
     function setView(viewName) {
       viewHome.classList.remove("active");
       viewSide.classList.remove("active");
@@ -1241,11 +1114,11 @@
       debateTopics.forEach(topic => {
         const card = document.createElement("button");
         card.type = "button";
-        card.className = "card topic-card";
+        card.className = "topic-card";
         card.setAttribute("data-topic-id", topic.id);
 
         const pill = document.createElement("div");
-        pill.className = "topic-pill";
+        pill.className = "pill";
         pill.textContent = "Debate topic";
 
         const h3 = document.createElement("h3");
@@ -1254,14 +1127,14 @@
         const p = document.createElement("p");
         p.textContent = topic.tagline || "Click to debate this behaviour.";
 
-        const tagline = document.createElement("div");
-        tagline.className = "topic-tagline";
-        tagline.textContent = "Healthy or unhealthy?";
+        const meta = document.createElement("div");
+        meta.className = "topic-meta";
+        meta.innerHTML = "<span>Healthy or unhealthy?</span><span>Click to open</span>";
 
         card.appendChild(pill);
         card.appendChild(h3);
         card.appendChild(p);
-        card.appendChild(tagline);
+        card.appendChild(meta);
 
         card.addEventListener("click", () => {
           currentTopicId = topic.id;
@@ -1287,15 +1160,16 @@
         factsLevelIndicator.textContent = "Advanced English";
       }
 
-      sideLevelLabel.textContent = currentLevel === "easy"
-        ? "You are using Easy English. Students can change this anytime."
-        : "You are using Advanced English. Students can change this anytime.";
+      sideLevelLabel.textContent =
+        currentLevel === "easy"
+          ? "Language level: Easy English (short model arguments)."
+          : "Language level: Advanced English (longer model arguments).";
 
-      debateLevelLabel.textContent = currentLevel === "easy"
-        ? "Current level: Easy English (simpler model arguments)."
-        : "Current level: Advanced English (longer, more complex arguments).";
+      debateLevelLabel.textContent =
+        currentLevel === "easy"
+          ? "Current level: Easy English."
+          : "Current level: Advanced English.";
 
-      // If we are already in debate view with help visible, re-render facts to update argument texts
       if (viewDebate.classList.contains("active")) {
         renderFacts();
       }
@@ -1305,15 +1179,14 @@
       const topic = getCurrentTopic();
       if (!topic) return;
       sideTopicTitle.textContent = topic.title;
-      sideTopicSubtitle.textContent = "Are you going to argue that this behaviour is healthy/helpful or unhealthy/harmful?";
       updateLevelUI();
     }
 
     function getSideLabelText() {
       if (currentSide === "pro") {
-        return "You are arguing FOR this habit. You want to show it is more healthy or helpful than people think.";
+        return "You are arguing FOR this habit. Try to show that it is more healthy or helpful than people think.";
       } else if (currentSide === "con") {
-        return "You are arguing AGAINST this habit. You want to show it is more unhealthy or harmful than people think.";
+        return "You are arguing AGAINST this habit. Try to show that it is more unhealthy or harmful than people think.";
       }
       return "";
     }
@@ -1336,7 +1209,7 @@
     function renderFacts() {
       const argumentsList = getCurrentArguments();
       if (!argumentsList.length) {
-        factsContainer.innerHTML = "<p class=\"pill-info\">No facts found for this side.</p>";
+        factsContainer.innerHTML = "<p class=\"hint\">No facts found for this side.</p>";
         return;
       }
 
@@ -1372,18 +1245,13 @@
         factsContainer.appendChild(card);
       }
 
-      // Update button states
-      if (currentFactCount >= argumentsList.length) {
-        btnNextFact.disabled = true;
-      } else {
-        btnNextFact.disabled = false;
-      }
+      const args = getCurrentArguments();
+      btnNextFact.disabled = currentFactCount >= args.length;
     }
 
     function resetDebateState() {
       currentFactCount = 1;
       showHelp = false;
-      notesInput.value = "";
     }
 
     function startDebateOnSide(side) {
@@ -1396,7 +1264,6 @@
     }
 
     // Event listeners
-
     levelEasyBtn.addEventListener("click", () => {
       currentLevel = "easy";
       updateLevelUI();
@@ -1455,14 +1322,6 @@
     btnHideHelp.addEventListener("click", () => {
       showHelp = false;
       renderFacts();
-    });
-
-    btnClearNotes.addEventListener("click", () => {
-      notesInput.value = "";
-    });
-
-    btnDebateBack.addEventListener("click", () => {
-      setView("home");
     });
 
     // Initialise
